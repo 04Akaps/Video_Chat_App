@@ -2,9 +2,13 @@ package main
 
 import (
 	"flag"
+	"github.com/04Akaps/Video_Chat_App/pkg/app"
 	"log"
-	"streamingServer/pkg/app"
 )
+
+//
+//github.com/gin-gonic/gin v1.9.1
+//github.com/naoina/toml v0.1.1
 
 var configFlag = flag.String("config", "./config.toml", "configuration toml file path")
 
