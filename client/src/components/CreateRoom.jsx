@@ -1,13 +1,14 @@
 import React from "react";
 
 import "./CreateRoom.css"
+import axios from "axios";
 
 const CreateRoom = (props) => {
     const create = async (e) => {
         e.preventDefault();
 
-        const resp = await fetch("http://localhost:8000/create");
-        const { room_id } = await resp.json();
+        const resp = await axios.post("http://localhost:8000/create")
+        const { room_id } =  resp.data
 
         props.history.push(`/room/${room_id}`)
     };
