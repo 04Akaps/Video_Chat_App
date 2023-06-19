@@ -6,10 +6,6 @@ import (
 	"log"
 )
 
-//
-//github.com/gin-gonic/gin v1.9.1
-//github.com/naoina/toml v0.1.1
-
 var configFlag = flag.String("config", "./config.toml", "configuration toml file path")
 
 func init() {
