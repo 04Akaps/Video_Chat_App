@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/04Akaps/Video_Chat_App/config"
 	"github.com/04Akaps/Video_Chat_App/pkg/app"
 	"log"
 )
@@ -13,7 +14,13 @@ func init() {
 }
 
 func main() {
-	cfg := app.NewConfig(*configFlag)
+	cfg := config.NewConfig(*configFlag)
 
-	app.NewApp(cfg)
+	if app, err := app.NewApp(cfg); err != nil {
+		panic(err)
+	} else {
+		go app.Wait()
+		app.Run()
+	}
+
 }
