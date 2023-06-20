@@ -4,9 +4,16 @@ import (
 	"github.com/gorilla/websocket"
 	"log"
 	"math/rand"
+	"net/http"
 	"sync"
 	"time"
 )
+
+var upgrader = websocket.Upgrader{
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
+}
 
 type Participant struct {
 	Host bool
