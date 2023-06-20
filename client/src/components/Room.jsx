@@ -1,13 +1,45 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef , useState} from "react";
 
 const Room = (props) => {
-    const userVideo = useRef();
-    const partnerVideo = useRef();
+    const videoRef = useRef(null);
+    const [isVideoVisible, setIsVideoVisible] = useState(false);
+    const [stream, setStream] = useState(null);
+
+    useEffect(() => {
+        if (isVideoVisible) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then((stream) => {
+                    if (videoRef.current) {
+                        videoRef.current.srcObject = stream;
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error accessing camera:', error);
+                });
+        } else {
+            if (videoRef.current) {
+                const currentStream = videoRef.current.srcObject;
+                const tracks = currentStream?.getTracks();
+                if (tracks) {
+                    tracks.forEach((track) => {
+                        track.stop();
+                    });
+                }
+                videoRef.current.srcObject = null;
+            }
+        }
+    }, [isVideoVisible]);
+
+    const toggleVideo = () => {
+        setIsVideoVisible(!isVideoVisible);
+    };
 
     return (
         <div>
-            <video autoPlay controls={true} ref={userVideo}></video>
-            <video autoPlay controls={true} ref={partnerVideo}></video>
+            {isVideoVisible && <video ref={videoRef} autoPlay playsInline />}
+            <button onClick={toggleVideo}>
+                {isVideoVisible ? 'Hide' : 'Show'}
+            </button>
         </div>
     );
 };
