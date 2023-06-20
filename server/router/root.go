@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/04Akaps/Video_Chat_App/config"
+	"github.com/04Akaps/Video_Chat_App/types"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -9,15 +10,17 @@ import (
 )
 
 type Router struct {
-	engine *gin.Engine
-	port   string
-	rooms  *RoomMap
+	engine    *gin.Engine
+	port      string
+	rooms     *RoomMap
+	broadCast chan types.BroadcastMsg
 }
 
 func NewRouter(cfg *config.Config) *Router {
 	r := Router{
-		engine: gin.New(),
-		port:   cfg.ServerInfo.Port,
+		engine:    gin.New(),
+		port:      cfg.ServerInfo.Port,
+		broadCast: make(chan types.BroadcastMsg),
 	}
 
 	r.engine.Use(gin.Logger())
