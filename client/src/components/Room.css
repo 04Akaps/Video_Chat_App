@@ -1,0 +1,8 @@
+.video-wrapper {
+    width: 100%;
+    height: 50%;
+}
+
+.video-wrapper video {
+    width: 100%;
+}

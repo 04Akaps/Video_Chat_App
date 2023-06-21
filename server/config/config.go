@@ -6,11 +6,19 @@ import (
 )
 
 type Config struct {
-	Library []*PathConfig `json:"library"`
-
 	ServerInfo struct {
 		Ip   string
 		Port string
+	}
+
+	GoogleOAuth struct {
+		ClientID     string
+		ClientSecret string
+		CallbackUrl  string
+	}
+
+	Paseto struct {
+		PasetoKey string
 	}
 }
 

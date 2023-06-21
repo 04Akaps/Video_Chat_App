@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/04Akaps/Video_Chat_App/config"
+	"github.com/04Akaps/Video_Chat_App/reposiroty"
 	"github.com/04Akaps/Video_Chat_App/types"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -14,6 +15,8 @@ type Router struct {
 	port      string
 	rooms     *RoomMap
 	broadCast chan types.BroadcastMsg
+	oAuth     *reposiroty.Auth
+	paseto    *reposiroty.PasetoMaker
 }
 
 func NewRouter(cfg *config.Config) *Router {
@@ -39,9 +42,14 @@ func NewRouter(cfg *config.Config) *Router {
 	}))
 
 	r.rooms = NewAllRooms()
+	r.oAuth = reposiroty.NewOAuth(cfg)
+	r.paseto = reposiroty.NewPasetoMaker(cfg.Paseto.PasetoKey)
 
 	r.engine.POST("/create", r.CreateRoom)
 	r.engine.POST("/join", r.JoinRoom)
+
+	r.engine.GET("/login", r.login)
+	r.engine.GET("/login/callback", r.loginCallback)
 
 	return &r
 }

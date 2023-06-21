@@ -1,9 +1,11 @@
 import React, { useEffect, useRef , useState} from "react";
 
+
+import "./Room.css"
+
 const Room = (props) => {
     const videoRef = useRef(null);
     const [isVideoVisible, setIsVideoVisible] = useState(false);
-    const [stream, setStream] = useState(null);
 
     useEffect(() => {
         if (isVideoVisible) {
@@ -35,8 +37,11 @@ const Room = (props) => {
     };
 
     return (
-        <div>
-            {isVideoVisible && <video ref={videoRef} autoPlay playsInline />}
+        <div >
+            <div className={"video-wrapper"}>
+                {isVideoVisible && <video ref={videoRef} autoPlay playsInline />}
+            </div>
+
             <button onClick={toggleVideo}>
                 {isVideoVisible ? 'Hide' : 'Show'}
             </button>

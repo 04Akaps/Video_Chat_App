@@ -1,0 +1,14 @@
+.google_login_button {
+    border: none;
+    border-radius: 16px;
+    padding: 20px 30px;
+    font-weight: 800;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.google_login_button:hover{
+    border: 1px solid black;
+    transform: scale(1.1);
+    transition: 0.5s;
+}
