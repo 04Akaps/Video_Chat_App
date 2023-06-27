@@ -13,7 +13,7 @@ import (
 type Router struct {
 	engine    *gin.Engine
 	port      string
-	rooms     *RoomMap
+	rooms     *reposiroty.RoomMap
 	broadCast chan types.BroadcastMsg
 	oAuth     *reposiroty.Auth
 	paseto    *reposiroty.PasetoMaker
@@ -41,15 +41,12 @@ func NewRouter(cfg *config.Config) *Router {
 		MaxAge: 12 * time.Hour,
 	}))
 
-	r.rooms = NewAllRooms()
+	r.rooms = reposiroty.NewAllRooms()
 	r.oAuth = reposiroty.NewOAuth(cfg)
 	r.paseto = reposiroty.NewPasetoMaker(cfg.Paseto.PasetoKey)
 
-	r.engine.POST("/create", r.CreateRoom)
-	r.engine.POST("/join", r.JoinRoom)
-
-	r.engine.GET("/login", r.login)
-	r.engine.GET("/login/callback", r.loginCallback)
+	newAuth(r)
+	newRoom(r, r.rooms, r.broadCast)
 
 	return &r
 }

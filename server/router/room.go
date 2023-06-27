@@ -1,13 +1,50 @@
 package router
 
 import (
+	"github.com/04Akaps/Video_Chat_App/reposiroty"
 	"github.com/04Akaps/Video_Chat_App/types"
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
 )
 
-func (r *Router) JoinRoom(c *gin.Context) {
+type room struct {
+	router    Router
+	rooms     *reposiroty.RoomMap
+	broadCast chan types.BroadcastMsg
+	upgrader  websocket.Upgrader
+}
+
+func newRoom(r Router, rooms *reposiroty.RoomMap, broadCast chan types.BroadcastMsg) *room {
+	a := &room{
+		router:    r,
+		rooms:     rooms,
+		broadCast: broadCast,
+		upgrader: websocket.Upgrader{
+			CheckOrigin: func(r *http.Request) bool {
+				return true
+			},
+		},
+	}
+
+	r.engine.POST("/create", a.CreateRoom)
+	r.engine.POST("/join", a.JoinRoom)
+
+	return a
+}
+
+func (r *room) CreateRoom(c *gin.Context) {
+	roomID := r.rooms.CreateRoom()
+
+	type resp struct {
+		RoomID string `json:"room_id"`
+	}
+
+	c.JSON(http.StatusOK, resp{RoomID: roomID})
+}
+
+func (r *room) JoinRoom(c *gin.Context) {
 
 	var req types.JoinRoomReq
 
@@ -16,7 +53,7 @@ func (r *Router) JoinRoom(c *gin.Context) {
 		return
 	}
 
-	ws, err := upgrader.Upgrade(c.Writer, c.Request, nil)
+	ws, err := r.upgrader.Upgrade(c.Writer, c.Request, nil)
 
 	if err != nil {
 		log.Fatal("Web Socket Upgrade Error", err)
@@ -41,7 +78,7 @@ func (r *Router) JoinRoom(c *gin.Context) {
 	}
 }
 
-func (r *Router) broadcaster() {
+func (r *room) broadcaster() {
 	for {
 		msg := <-r.broadCast
 

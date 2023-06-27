@@ -14,7 +14,7 @@ export default NiceModal.create(() => {
         const res = await axios.get("http://localhost:8000/login")
         console.log((res.data))
 
-        window.open(res.data)
+        window.location.replace(res.data)
 
         // modal.hide()
     }

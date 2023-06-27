@@ -10,14 +10,32 @@ import (
 	"net/http"
 )
 
-func (r *Router) login(c *gin.Context) {
-	url := r.oAuth.OAuthConf.AuthCodeURL("random")
-	fmt.Println(url)
+type auth struct {
+	router Router
+}
 
+func newAuth(router Router) *auth {
+	a := &auth{
+		router: router,
+	}
+
+	router.engine.GET("/login", a.login)
+	router.engine.GET("/login/callback", a.loginCallback)
+	router.engine.GET("/check-token", a.checkToken)
+
+	return a
+}
+
+func (r *auth) checkToken(c *gin.Context) {
+
+}
+
+func (r *auth) login(c *gin.Context) {
+	url := r.router.oAuth.OAuthConf.AuthCodeURL("random")
 	c.JSON(http.StatusOK, url)
 }
 
-func (r *Router) loginCallback(c *gin.Context) {
+func (r *auth) loginCallback(c *gin.Context) {
 	request := c.Request
 
 	data, err := r.getGoogleUserInfo(request.FormValue("code"))
@@ -41,7 +59,7 @@ func (r *Router) loginCallback(c *gin.Context) {
 		return
 	}
 
-	if token, err := r.paseto.CreateToken(user.Name); err != nil {
+	if token, err := r.router.paseto.CreateToken(user.Name); err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusConflict, "Token Create Failed")
 		return
@@ -54,8 +72,8 @@ func (r *Router) loginCallback(c *gin.Context) {
 
 const oauthGoogleUrlAPI = "https://www.googleapis.com/oauth2/v2/userinfo?access_token="
 
-func (r *Router) getGoogleUserInfo(code string) ([]byte, error) {
-	token, err := r.oAuth.OAuthConf.Exchange(context.Background(), code)
+func (r *auth) getGoogleUserInfo(code string) ([]byte, error) {
+	token, err := r.router.oAuth.OAuthConf.Exchange(context.Background(), code)
 	if err != nil {
 		return nil, fmt.Errorf("Failed to Exchange %s\n", err.Error())
 	}
