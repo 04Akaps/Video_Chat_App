@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/04Akaps/Video_Chat_App/reposiroty"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"log"
@@ -12,11 +13,13 @@ import (
 
 type auth struct {
 	router Router
+	paseto *reposiroty.PasetoMaker
 }
 
-func newAuth(router Router) *auth {
+func newAuth(router Router, paseto *reposiroty.PasetoMaker) *auth {
 	a := &auth{
 		router: router,
+		paseto: paseto,
 	}
 
 	router.engine.GET("/login", a.login)
@@ -27,7 +30,11 @@ func newAuth(router Router) *auth {
 }
 
 func (r *auth) checkToken(c *gin.Context) {
-
+	if err := r.router.extractToken(c); err != nil {
+		c.JSON(http.StatusOK, "ok")
+	} else {
+		c.JSON(http.StatusCreated, "failed")
+	}
 }
 
 func (r *auth) login(c *gin.Context) {

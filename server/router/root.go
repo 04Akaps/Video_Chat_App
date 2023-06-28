@@ -1,12 +1,14 @@
 package router
 
 import (
+	"errors"
 	"github.com/04Akaps/Video_Chat_App/config"
 	"github.com/04Akaps/Video_Chat_App/reposiroty"
 	"github.com/04Akaps/Video_Chat_App/types"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"log"
+	"strings"
 	"time"
 )
 
@@ -45,7 +47,7 @@ func NewRouter(cfg *config.Config) *Router {
 	r.oAuth = reposiroty.NewOAuth(cfg)
 	r.paseto = reposiroty.NewPasetoMaker(cfg.Paseto.PasetoKey)
 
-	newAuth(r)
+	newAuth(r, r.paseto)
 	newRoom(r, r.rooms, r.broadCast)
 
 	return &r
@@ -54,4 +56,15 @@ func NewRouter(cfg *config.Config) *Router {
 func (r *Router) Run() error {
 	log.Println("Http Server Start", "endpoint", r.port)
 	return r.engine.Run(r.port)
+}
+
+func (p *Router) extractToken(c *gin.Context) error {
+	bearToken := c.Request.Header.Get("Authorization")
+	slice := strings.Split(bearToken, " ") //"bearer" 제거
+
+	if len(slice) < 1 {
+		return errors.New("Not Found Auth Token")
+	}
+
+	return p.paseto.VerifyToken(slice[1])
 }
