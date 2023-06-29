@@ -28,8 +28,10 @@ func newRoom(r Router, rooms *reposiroty.RoomMap, broadCast chan types.Broadcast
 		},
 	}
 
-	r.engine.POST("/create", a.CreateRoom)
-	r.engine.POST("/join", a.JoinRoom)
+	baseUri := "/room"
+
+	r.engine.POST(baseUri+"/create", a.router.verifyAuthToken(), a.CreateRoom)
+	r.engine.POST(baseUri+"/join", a.router.verifyAuthToken(), a.JoinRoom)
 
 	return a
 }

@@ -3,9 +3,9 @@ port = ":8000"
 ip = "localhost"
 
 [googleOAuth]
-clientId = "563566199483-kqqhil88ljimv4thrb7p4941lsh2qscs.apps.googleusercontent.com"
-clientSecret ="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"
-callBackUrl = "http://localhost:8000/login/callback"
+clientId = "563566199483-hcbham6nk7alfh4hm2pqsntrbqsom9an.apps.googleusercontent.com"
+clientSecret ="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"
+callBackUrl = "http://localhost:8000/auth/login/callback"
 
 
 [Paseto]

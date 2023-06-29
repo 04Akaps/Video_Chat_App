@@ -1,15 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 
-import CreateRoom from "./components/CreateRoom"
 import Room from "./components/Room"
-
-import "./App.css"
 import Home from "./components/Home";
 
+import "./App.css"
+
 function App() {
-
-
 
     return <div className="App">
         <BrowserRouter>

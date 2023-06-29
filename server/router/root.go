@@ -8,6 +8,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"log"
+	"net/http"
 	"strings"
 	"time"
 )
@@ -67,4 +68,14 @@ func (p *Router) extractToken(c *gin.Context) error {
 	}
 
 	return p.paseto.VerifyToken(slice[1])
+}
+
+func (r *Router) verifyAuthToken() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if err := r.extractToken(c); err != nil {
+			c.JSON(http.StatusForbidden, "Failed Auth")
+		} else {
+			c.Next() //문제가 없다면 다음 handler 호출.
+		}
+	}
 }

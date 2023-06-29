@@ -11,12 +11,10 @@ export default NiceModal.create(() => {
 
     const handleGoogleLogin  = async () => {
 
-        const res = await axios.get("http://localhost:8000/login")
+        const res = await axios.get("http://localhost:8000/auth/login")
         console.log((res.data))
 
         window.location.replace(res.data)
-
-        // modal.hide()
     }
 
     return (

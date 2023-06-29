@@ -22,9 +22,11 @@ func newAuth(router Router, paseto *reposiroty.PasetoMaker) *auth {
 		paseto: paseto,
 	}
 
-	router.engine.GET("/login", a.login)
-	router.engine.GET("/login/callback", a.loginCallback)
-	router.engine.GET("/check-token", a.checkToken)
+	baseUri := "/auth"
+
+	router.engine.GET(baseUri+"/login", a.login)
+	router.engine.GET(baseUri+"/login/callback", a.loginCallback)
+	router.engine.GET(baseUri+"/check-token", a.checkToken)
 
 	return a
 }
@@ -44,7 +46,7 @@ func (r *auth) login(c *gin.Context) {
 
 func (r *auth) loginCallback(c *gin.Context) {
 	request := c.Request
-
+	fmt.Println("들어옴")
 	data, err := r.getGoogleUserInfo(request.FormValue("code"))
 	if err != nil {
 		log.Println(err.Error())
