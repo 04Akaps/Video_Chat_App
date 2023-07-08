@@ -7,6 +7,16 @@ clientId = "563566199483-hcbham6nk7alfh4hm2pqsntrbqsom9an.apps.googleusercontent
 clientSecret ="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"
 callBackUrl = "http://localhost:8000/auth/login/callback"
 
-
 [Paseto]
 pasetoKey = "12345678901234567890123456789012"
+
+[MySQLConfig]
+database = "mysql"
+dbName = "chat"
+uri = "root:root@tcp(localhost:3306)/chat?charset=utf8&parseTime=True&loc=Local"
+maxIdleConns = 5
+maxOpenConns = 30
+connMaxLifetime = 180
+
+[MongoConfig]
+databaseUrl = "mongodb+srv://hojin:1111@msggo.wbwdsv8.mongodb.net/?retryWrites=true&w=majority"

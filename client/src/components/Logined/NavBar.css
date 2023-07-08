@@ -1,0 +1,18 @@
+.nav-bar-wrapper{
+    background-color: aliceblue;
+    height: 50px;
+}
+
+.nav-bar-wrapper .nav-bar-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    height: 100%;
+}
+
+.nav-bar-wrapper .nav-bar-box  span{
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 700;
+}
