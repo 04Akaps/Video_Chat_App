@@ -11,12 +11,9 @@ type AuthEntity struct {
 }
 
 type RoomEntity struct {
-	RoomHash  string    `json:"room_hash"`
-	OwnerName string    `json:"owner_name"`
-	CreatedAt time.Time `json:"created_at"`
-}
-
-type RoomParticipantEntity struct {
-	RoomHash string `json:"room_hash"`
-	UserName string `json:"user_name"`
+	RoomHash            string    `json:"room_hash"`
+	OwnerName           string    `json:"owner_name"`
+	CreatedAt           time.Time `json:"created_at"`
+	IsBroadCast         bool      `json:"is_broad_cast"`
+	BeforeBroadCastTime int64     `json:"before_broad_cast_time"`
 }

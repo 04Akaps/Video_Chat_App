@@ -1,16 +1,16 @@
 import React from "react";
-import "./NavBar.css"
+
+import MyRoomList from "./subComponents/MyRoomList";
+import RecentlyCreated from "./subComponents/RecentlyCreated";
+
+import "./RoomList.css"
 
 const RoomList = (props) => {
 
-
-    // TODO -> RoomList 불러오자
-
     return (
         <div className="room-list-wrapper">
-            <div className="nav-bar-box">
-                <span>Room List</span>
-            </div>
+            <div><MyRoomList/></div>
+            <div><RecentlyCreated/></div>
         </div>
     );
 };

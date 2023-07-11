@@ -1,0 +1,8 @@
+.create_room_button {
+    border: none;
+    border-radius: 16px;
+    font-weight: 800;
+    font-size: 14px;
+    padding: 10px 20px;
+    cursor: pointer;
+}

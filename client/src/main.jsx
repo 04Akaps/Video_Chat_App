@@ -9,11 +9,11 @@ import { CookiesProvider } from "react-cookie";
 ReactDOM.render(
     <React.StrictMode>
         <GlobalAuth.Provider value={new Auth()}>
-            <NiceModal.Provider>
-                <CookiesProvider>
-                    <App />
-                </CookiesProvider>
-            </NiceModal.Provider>
+                <NiceModal.Provider>
+                    <CookiesProvider>
+                        <App />
+                    </CookiesProvider>
+                </NiceModal.Provider>
         </GlobalAuth.Provider >
     </React.StrictMode>,
     document.getElementById("root")

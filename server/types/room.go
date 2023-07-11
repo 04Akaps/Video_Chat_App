@@ -9,13 +9,11 @@ type Auth struct {
 }
 
 type Room struct {
-	RoomHash  string `json:"room_hash"`
-	OwnerName string `json:"owner_name"`
-	CreatedAt int64  `json:"created_at"`
-}
-
-type RoomParticipant struct {
-	UserName string `json:"user_name"`
+	RoomHash            string `json:"room_hash"`
+	OwnerName           string `json:"owner_name"`
+	CreatedAt           int64  `json:"created_at"`
+	IsBroadCast         bool   `json:"is_broad_cast"`
+	BeforeBroadCastTime int64  `json:"before_broad_cast_time"`
 }
 
 type TotalRoomListReq struct {
@@ -27,6 +25,9 @@ type GetRoomByHashReq struct {
 }
 
 type GetRoomByHashRes struct {
-	Room        *Room              `json:"room"`
-	Participant []*RoomParticipant `json:"participant"`
+	Room *Room `json:"room"`
+}
+
+type ChangeRoomStatusByHashReq struct {
+	Hash string `uri:"hash"`
 }

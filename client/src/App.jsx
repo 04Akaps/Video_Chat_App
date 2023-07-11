@@ -9,6 +9,7 @@ import axiosInstance from "./api/axiosInstance";
 import {useAuth} from "./context/user";
 import Home from "./components/Logined/Home";
 import {renderToStaticMarkup} from "react-dom/server";
+import NavBar from "./components/Logined/NavBar";
 
 function App() {
     const auth = useAuth()
@@ -30,21 +31,23 @@ function App() {
         });
     }, [auth]);
 
-    return <div className="App">
-        <BrowserRouter>
-            <Switch>
-                {auth.userName ?
-                    (
-                        <Route path="/" exact component={Home}></Route>
-                    ) :
-                    (
-                        <Route path="/" exact component={Login}></Route>
-                    )
-                }
-                <Route path="/room/:roomID" component={Room}></Route>
-            </Switch>
-        </BrowserRouter>
-    </div>;
+  return (
+      <div className="App">
+          <BrowserRouter>
+              <Switch>
+                  {auth.userName ? (
+                      <>
+                          <NavBar/>
+                          <Route path="/" exact component={Home} />
+                          <Route path="/room/:roomID" component={Room} />
+                      </>
+                  ) : (
+                      <Route path="/" exact component={Login} />
+                  )}
+              </Switch>
+          </BrowserRouter>
+      </div>
+  )
 }
 
 export default App;

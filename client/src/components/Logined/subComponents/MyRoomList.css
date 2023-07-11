@@ -1,0 +1,10 @@
+.my-room-list-wrapper {
+    margin-top: 20px;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: max-content;
+    gap: 25px;
+}

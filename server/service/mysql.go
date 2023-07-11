@@ -40,9 +40,9 @@ func (m *mysql) InsertRoom(hash, ownerName string) error {
 	return m.db.Mysql.Room.Insert(context.TODO(), m.db.Mysql.DB, hash, ownerName)
 }
 
-func (m *mysql) GetRoomDataByHash(hash string) (*types.Room, []*types.RoomParticipant, error) {
+func (m *mysql) GetRoomDataByHash(hash string) (*types.Room, error) {
 	if tx, err := m.db.Mysql.DB.Begin(); err != nil {
-		return nil, nil, err
+		return nil, err
 	} else {
 		room, err := m.db.Mysql.Room.GetRoomByHash(context.TODO(), tx, hash)
 
@@ -51,33 +51,16 @@ func (m *mysql) GetRoomDataByHash(hash string) (*types.Room, []*types.RoomPartic
 				// TODO  - 로깅 넣읍시다.!!
 				log.Println("RollBack : ", e)
 			}
-			return nil, nil, err
-		}
-
-		participants, err := m.db.Mysql.Participant.GetParticipant(context.TODO(), tx, hash)
-
-		if err != nil {
-			if e := tx.Rollback(); e != nil {
-				log.Println("RollBack : ", e)
-			}
-			return nil, nil, err
-		}
-
-		var model []*types.RoomParticipant
-
-		for _, participant := range participants {
-			newModel := &types.RoomParticipant{
-				UserName: participant.UserName,
-			}
-
-			model = append(model, newModel)
+			return nil, err
 		}
 
 		return &types.Room{
-			RoomHash:  room.RoomHash,
-			OwnerName: room.OwnerName,
-			CreatedAt: room.CreatedAt.Unix(),
-		}, model, tx.Commit()
+			RoomHash:            room.RoomHash,
+			OwnerName:           room.OwnerName,
+			CreatedAt:           room.CreatedAt.Unix(),
+			IsBroadCast:         room.IsBroadCast,
+			BeforeBroadCastTime: room.BeforeBroadCastTime,
+		}, tx.Commit()
 	}
 
 }
@@ -88,16 +71,17 @@ func (m *mysql) GetRoomByOwner(owner string) ([]*types.Room, error) {
 	} else {
 
 		if len(res) == 0 {
-			return nil, errors.New("NO Data")
+			return []*types.Room{}, nil
 		}
-
 		var model []*types.Room
 
 		for _, room := range res {
 			newModel := &types.Room{
-				RoomHash:  room.RoomHash,
-				OwnerName: room.OwnerName,
-				CreatedAt: room.CreatedAt.Unix(),
+				RoomHash:            room.RoomHash,
+				OwnerName:           room.OwnerName,
+				CreatedAt:           room.CreatedAt.Unix(),
+				IsBroadCast:         room.IsBroadCast,
+				BeforeBroadCastTime: room.BeforeBroadCastTime,
 			}
 
 			model = append(model, newModel)
@@ -107,6 +91,9 @@ func (m *mysql) GetRoomByOwner(owner string) ([]*types.Room, error) {
 	}
 }
 
+func (m *mysql) RoomCountByName(owner string) (int64, error) {
+	return m.db.Mysql.Room.GetRoomCountByName(context.TODO(), m.db.Mysql.DB, owner)
+}
 func (m *mysql) GetAllRoomByPaging(paging *types.Paging) ([]*types.Room, error) {
 	verifyPagingOption(paging)
 
@@ -117,9 +104,49 @@ func (m *mysql) GetAllRoomByPaging(paging *types.Paging) ([]*types.Room, error) 
 
 		for _, room := range res {
 			newModel := &types.Room{
-				RoomHash:  room.RoomHash,
-				OwnerName: room.OwnerName,
-				CreatedAt: room.CreatedAt.Unix(),
+				RoomHash:            room.RoomHash,
+				OwnerName:           room.OwnerName,
+				CreatedAt:           room.CreatedAt.Unix(),
+				IsBroadCast:         room.IsBroadCast,
+				BeforeBroadCastTime: room.BeforeBroadCastTime,
+			}
+
+			model = append(model, newModel)
+		}
+
+		return model, nil
+	}
+}
+
+func (m *mysql) ChangeBroadCastStatus(owner, hash string) error {
+	if result, err := m.GetRoomDataByHash(hash); err != nil {
+		return err
+	} else {
+		if result.OwnerName != owner {
+			return errors.New("Not Your Room")
+		} else {
+			return m.db.Mysql.Room.UpdateBroadCast(context.TODO(), m.db.Mysql.DB, !result.IsBroadCast, hash)
+		}
+	}
+}
+
+func (m *mysql) RecentlyCreatedRoomList() ([]*types.Room, error) {
+	if res, err := m.db.Mysql.Room.RecentlyCreatedRoomLIst(context.TODO(), m.db.Mysql.DB); err != nil {
+		return nil, err
+	} else {
+
+		if len(res) == 0 {
+			return []*types.Room{}, nil
+		}
+		var model []*types.Room
+
+		for _, room := range res {
+			newModel := &types.Room{
+				RoomHash:            room.RoomHash,
+				OwnerName:           room.OwnerName,
+				CreatedAt:           room.CreatedAt.Unix(),
+				IsBroadCast:         room.IsBroadCast,
+				BeforeBroadCastTime: room.BeforeBroadCastTime,
 			}
 
 			model = append(model, newModel)
